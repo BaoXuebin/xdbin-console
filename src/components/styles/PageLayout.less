@@ -1,0 +1,66 @@
+@keyframes left-extend-animation {
+  0% {
+    margin-left: 200px;
+  }
+
+  100% {
+    margin-left: 80px;
+  }
+}
+
+@keyframes right-extend-animation {
+  0% {
+    margin-left: 80px;
+  }
+
+  100% {
+    margin-left: 200px;
+  }
+}
+
+.components-layout {
+  .header {
+    position: fixed;
+    width   : 100%;
+    z-index: 2;
+
+    .logo {
+      float     : left;
+      width     : 126px;
+      height    : 31px;
+      margin    : 16px 24px 16px 0;
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  .layout-content {
+    display: flex;
+
+    .side {
+      width: 200px;
+      margin-top: 64px;
+      overflow  : auto;
+      height    : calc(100vh - 64px);
+      position  : fixed;
+      left      : 0;
+    }
+
+    .content {
+      min-height: calc(100vh - 64px);
+      margin-top: 64px;
+      padding   : 0 24px 24px
+    }
+
+    .left-extend {
+      animation: left-extend-animation .12s ease;
+    }
+
+    .right-extend {
+      animation: right-extend-animation .12s ease;
+    }
+
+    .page-content {
+      background-color: #fff;
+    }
+  }
+}

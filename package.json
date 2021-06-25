@@ -1,0 +1,52 @@
+{
+  "name": "xdbin-console",
+  "version": "0.1.0",
+  "private": true,
+  "proxy": "http://localhost:8080",
+  "dependencies": {
+    "@craco/craco": "^6.1.1",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "antd": "^4.15.0",
+    "craco-less": "^1.17.1",
+    "dayjs": "^1.10.5",
+    "env-cmd": "^10.1.0",
+    "isomorphic-fetch": "^3.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-loadable": "^5.5.0",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.3",
+    "web-vitals": "^1.0.1"
+  },
+  "scripts": {
+    "start": "env-cmd -f ./.env.dev craco start",
+    "build:dev": "env-cmd -f .env.dev craco build",
+    "build:test": "env-cmd -f .env.test craco build",
+    "build:staging": "env-cmd -f .env.staging craco build",
+    "build:prod": "env-cmd -f .env.prod craco build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "antd-dayjs-webpack-plugin": "^1.0.6"
+  }
+}
