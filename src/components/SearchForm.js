@@ -39,9 +39,9 @@ const SearchForm = ({ fields = [], loading = false, onSearch }) => {
 
   const onFinish = (values) => {
     console.log(values)
-    // if (typeof onSearch === 'function') {
-    //   onSearch(values)
-    // }
+    if (typeof onSearch === 'function') {
+      onSearch(values)
+    }
   };
 
   return (

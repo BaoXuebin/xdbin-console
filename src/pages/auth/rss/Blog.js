@@ -2,6 +2,7 @@ import { Table } from 'antd'
 import dayjs from 'dayjs'
 import React, { Component, Fragment } from 'react'
 import { fetchRssBlogsReq } from '../../../api/Rss'
+import FetchTable from '../../../components/FetchTable'
 import SearchForm from '../../../components/SearchForm'
 import Page from '../../base/Page'
 
@@ -13,12 +14,6 @@ const breadcrumb = [
 ]
 
 class RssBlogPage extends Component {
-
-  state = {
-    tableLoading: false,
-    tableData: [],
-    condition: {}
-  }
 
   columns = [
     {
@@ -57,7 +52,7 @@ class RssBlogPage extends Component {
       dataIndex: 'publishTime',
       key: 'publishTime',
       width: 120,
-      render: (publishTime) => <span>{dayjs(publishTime).fromNow()}</span>
+      render: (publishTime) => <span>{publishTime ? dayjs(publishTime).fromNow() : ''}</span>
     },
     {
       title: '操作',
@@ -67,39 +62,16 @@ class RssBlogPage extends Component {
     },
   ]
 
-  componentDidMount() {
-    this.fetchRssBlogs()
-  }
-
-  handleSearch = () => {
-    this.setState({ condition: {} }, () => {
-      this.fetchRssBlogs()
-    })
-  }
-
-  fetchRssBlogs = () => {
-    this.setState({ tableLoading: true })
-    fetchRssBlogsReq({
-      ...this.state.condition, pageNum: 1, pageSize: 100
-    })
-      .then(res => {
-        this.setState({ tableData: res.records })
-      }).finally(() => {
-        this.setState({ tableLoading: false })
-      })
-  }
-
   render() {
-    const { tableLoading, tableData } = this.state
     return (
       <div className="rss-blog-page page">
-        <SearchForm fields={
-          [
+        <FetchTable
+          req={fetchRssBlogsReq}
+          form={[
             { name: 'title', label: '标题' }
-          ]
-        } loading={tableLoading} onSearch={this.handleSearch} />
-        <div style={{ height: '1rem' }} />
-        <Table loading={tableLoading} size="small" bordered columns={this.columns} dataSource={tableData} pagination={false} />
+          ]}
+          columns={this.columns}
+        />
       </div>
     )
   }
