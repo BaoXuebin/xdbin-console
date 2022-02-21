@@ -1,4 +1,4 @@
-import { DeleteOutlined, DisconnectOutlined, ExclamationCircleOutlined, GlobalOutlined, HomeOutlined, LoadingOutlined, UserOutlined, WifiOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DisconnectOutlined, GlobalOutlined, HomeOutlined, LoadingOutlined, UserOutlined, WifiOutlined } from '@ant-design/icons';
 import { Button, Image, Modal, Space, Table, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import React, { Component } from 'react';
@@ -137,45 +137,31 @@ class RssSitePage extends Component {
   pullSite = () => { }
 
   handleSubscribe = (site) => {
-    Modal.confirm({
-      title: '确定恢复订阅?',
-      icon: <ExclamationCircleOutlined />,
-      content: `[${site.siteTitle}]`,
-      okText: '恢复订阅',
-      cancelText: '取消',
-      onOk: () => {
-        this.setState({ subscribeBtnLoading: true, subscribeSiteId: site.id })
-        subScribeSiteReq(site.id)
-          .then(res => {
-            this.state.tableData.filter(s => s.id === res)[0].pullOn = 1;
-            this.setState({ tableData: [...this.state.tableData] })
-          })
-          .finally(() => {
-            this.setState({ subscribeBtnLoading: false })
-          })
-      }
-    })
+    this.setState({ subscribeBtnLoading: true, subscribeSiteId: site.id })
+    subScribeSiteReq(site.id)
+      .then(res => {
+        this.table.refreshTableData((tableData, set) => {
+          tableData.filter(s => s.id === res)[0].pullOn = 1;
+          set([...tableData]);
+        })
+      })
+      .finally(() => {
+        this.setState({ subscribeBtnLoading: false })
+      })
   }
 
   handleCancelSubscribe = (site) => {
-    Modal.confirm({
-      title: '确定取消订阅?',
-      icon: <ExclamationCircleOutlined />,
-      content: `[${site.siteTitle}]`,
-      okText: '取消订阅',
-      cancelText: '取消',
-      onOk: () => {
-        this.setState({ subscribeBtnLoading: true, subscribeSiteId: site.id })
-        unSubScribeSiteReq(site.id)
-          .then(res => {
-            this.state.tableData.filter(s => s.id === res)[0].pullOn = 0;
-            this.setState({ tableData: [...this.state.tableData] })
-          })
-          .finally(() => {
-            this.setState({ subscribeBtnLoading: false })
-          })
-      }
-    })
+    this.setState({ subscribeBtnLoading: true, subscribeSiteId: site.id })
+    unSubScribeSiteReq(site.id)
+      .then(res => {
+        this.table.refreshTableData((tableData, set) => {
+          tableData.filter(s => s.id === res)[0].pullOn = 0;
+          set([...tableData]);
+        })
+      })
+      .finally(() => {
+        this.setState({ subscribeBtnLoading: false })
+      })
   }
 
   handleDelete = (site) => {
@@ -190,8 +176,10 @@ class RssSitePage extends Component {
         this.setState({ deleteBtnLoading: true, deleteSiteId: site.id })
         deleteSiteReq(site.id)
           .then(res => {
-            const sites = this.state.tableData.filter(s => s.id !== res);
-            this.setState({ tableData: [...sites] })
+            this.table.refreshTableData((tableData, set) => {
+              const sites = tableData.filter(s => s.id !== res);
+              set(sites);
+            })
           })
           .finally(() => {
             this.setState({ deleteBtnLoading: false })
@@ -200,8 +188,8 @@ class RssSitePage extends Component {
     })
   }
 
-  componentDidMount() {
-    this.fetchRssSites()
+  bindTable = (table) => {
+    this.table = table;
   }
 
   handleSearch = (condition) => {
@@ -224,7 +212,6 @@ class RssSitePage extends Component {
 
 
   render() {
-    const { tableLoading } = this.state
     return (
       <div className="rss-site-page page">
         <SearchForm fields={

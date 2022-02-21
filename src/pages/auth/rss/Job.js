@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import { Typography } from 'antd';
 import React, { Component, Fragment } from 'react'
 import { fetchRssBlogsReq } from '../../../api/Rss'
 import FetchTable from '../../../components/FetchTable'
@@ -6,12 +7,14 @@ import Page from '../../base/Page'
 
 const breadcrumb = [
   {
-    path: '/rss/blog',
-    breadcrumbName: 'RSS博客'
+    path: '/rss/job',
+    breadcrumbName: '定时任务'
   }
 ]
 
-class RssBlogPage extends Component {
+const { Title } = Typography;
+
+class RssJobPage extends Component {
 
   columns = [
     {
@@ -60,41 +63,24 @@ class RssBlogPage extends Component {
     },
   ]
 
-  componentDidMount() {
-    this.fetchRssBlogs()
-  }
-
-  handleSearch = (condition) => {
-    this.setState({ condition }, () => {
-      this.fetchRssBlogs()
-    })
-  }
-
-  fetchRssBlogs = () => {
-    this.setState({ tableLoading: true })
-    fetchRssBlogsReq({
-      ...this.state.condition, pageNum: 1, pageSize: 100
-    })
-      .then(res => {
-        this.setState({ tableData: res.records })
-      }).finally(() => {
-        this.setState({ tableLoading: false })
-      })
-  }
-
   render() {
     return (
-      <div className="rss-blog-page page">
-        <FetchTable
-          req={fetchRssBlogsReq}
-          form={[
-            { name: 'title', label: '标题' }
-          ]}
-          columns={this.columns}
-        />
-      </div>
+      <Fragment>
+        <div className="top" style={{ marginBottom: '1rem' }}>
+          <Title>h1. Ant Design</Title>
+        </div>
+        <div className="rss-rss-page page">
+          <FetchTable
+            req={fetchRssBlogsReq}
+            form={[
+              { name: 'title', label: '标题' }
+            ]}
+            columns={this.columns}
+          />
+        </div>
+      </Fragment>
     )
   }
 }
 
-export default Page(RssBlogPage, breadcrumb)
+export default Page(RssJobPage, breadcrumb)

@@ -1,4 +1,4 @@
-import { BookOutlined, WifiOutlined } from '@ant-design/icons';
+import { BookOutlined, WifiOutlined, CloudSyncOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -10,6 +10,7 @@ const RssSideMenu = ({ theme }) => (
     defaultSelectedKeys={['5']}
     style={{ height: '100%', borderRight: 0 }}
   >
+    <Menu.Item key="rss-job" icon={<CloudSyncOutlined />}><Link to="/rss/job">定时任务</Link></Menu.Item>
     <Menu.Item key="rss-site" icon={<WifiOutlined />}><Link to="/rss/site">RSS源</Link></Menu.Item>
     <Menu.Item key="rss-blog" icon={<BookOutlined />}><Link to="/rss/blog">博客</Link></Menu.Item>
   </Menu>

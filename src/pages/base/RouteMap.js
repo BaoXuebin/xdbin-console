@@ -9,18 +9,20 @@ const UserPage = Loadable({ loader: () => import('../auth/user/User'), loading: 
 const Data1Page = Loadable({ loader: () => import('../auth/system/data/Data1'), loading: Loader });
 const Setting = Loadable({ loader: () => import('../auth/system/Setting'), loading: Loader });
 
+const RssJob = Loadable({ loader: () => import('../auth/rss/Job'), loading: Loader });
 const RssSite = Loadable({ loader: () => import('../auth/rss/Site'), loading: Loader });
 const RssBlog = Loadable({ loader: () => import('../auth/rss/Blog'), loading: Loader });
 
 const RouteMap = () => (
   <Switch>
     <Route path={'/login'} component={Login} />
-    <AuthRoute exact path={'/'} component={Index} />
+    <AuthRoute exact path={'/'} component={RssSite} />
     <AuthRoute exact path={'/index'} component={Index} />
     <AuthRoute exact path={'/user'} component={UserPage} />
     <AuthRoute exact path={'/user/onWork'} component={UserPage} />
     <AuthRoute exact path={'/data/data1'} component={Data1Page} />
     <AuthRoute exact path={'/setting'} component={Setting} />
+    <AuthRoute exact path={'/rss/job'} component={RssJob} />
     <AuthRoute exact path={'/rss/site'} component={RssSite} />
     <AuthRoute exact path={'/rss/blog'} component={RssBlog} />
   </Switch>
