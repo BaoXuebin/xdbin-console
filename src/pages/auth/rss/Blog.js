@@ -60,28 +60,6 @@ class RssBlogPage extends Component {
     },
   ]
 
-  componentDidMount() {
-    this.fetchRssBlogs()
-  }
-
-  handleSearch = (condition) => {
-    this.setState({ condition }, () => {
-      this.fetchRssBlogs()
-    })
-  }
-
-  fetchRssBlogs = () => {
-    this.setState({ tableLoading: true })
-    fetchRssBlogsReq({
-      ...this.state.condition, pageNum: 1, pageSize: 100
-    })
-      .then(res => {
-        this.setState({ tableData: res.records })
-      }).finally(() => {
-        this.setState({ tableLoading: false })
-      })
-  }
-
   render() {
     return (
       <div className="rss-blog-page page">

@@ -1,10 +1,10 @@
 import { DeleteOutlined, DisconnectOutlined, GlobalOutlined, HomeOutlined, LoadingOutlined, UserOutlined, WifiOutlined } from '@ant-design/icons';
-import { Button, Image, Modal, Space, Table, Tooltip } from 'antd';
+import { Button, Image, Modal, Space, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import React, { Component } from 'react';
 import { deleteSiteReq, fetchRssSitesReq, subScribeSiteReq, unSubScribeSiteReq } from '../../../api/Rss';
 import DefaultFavicon from '../../../assets/favicon.ico';
-import SearchForm from '../../../components/SearchForm';
+import FetchTable from '../../../components/FetchTable';
 import Page from '../../base/Page';
 import PullStatusTag from './components/PullStatusTag';
 
@@ -124,14 +124,10 @@ class RssSitePage extends Component {
   ];
 
   state = {
-    tableData: [],
     subscribeSiteId: null,
     subscribeBtnLoading: false,
     deleteSiteId: null,
-    deleteBtnLoading: false,
-    condition: {
-      pullOn: 1
-    }
+    deleteBtnLoading: false
   }
 
   pullSite = () => { }
@@ -176,6 +172,7 @@ class RssSitePage extends Component {
         this.setState({ deleteBtnLoading: true, deleteSiteId: site.id })
         deleteSiteReq(site.id)
           .then(res => {
+            console.log(this.table)
             this.table.refreshTableData((tableData, set) => {
               const sites = tableData.filter(s => s.id !== res);
               set(sites);
@@ -188,40 +185,21 @@ class RssSitePage extends Component {
     })
   }
 
-  bindTable = (table) => {
-    this.table = table;
-  }
-
-  handleSearch = (condition) => {
-    this.setState({ condition }, () => {
-      this.fetchRssSites()
-    })
-  }
-
-  fetchRssSites = () => {
-    this.setState({ tableLoading: true })
-    fetchRssSitesReq({
-      ...this.state.condition, pageNum: 1, pageSize: 50
-    })
-      .then(res => {
-        this.setState({ tableData: res.records })
-      }).finally(() => {
-        this.setState({ tableLoading: false })
-      })
-  }
-
-
   render() {
     return (
       <div className="rss-site-page page">
-        <SearchForm fields={
-          [
+        <FetchTable
+          initSearchCondition={
+            { pullOn: 1 }
+          }
+          req={fetchRssSitesReq}
+          form={[
             { name: 'title', label: '标题' },
             { name: 'pullOn', label: '是否订阅', type: 'select', defaultValue: 1, dataSet: [{ value: 1, label: '是' }, { value: 0, label: '否' }] }
-          ]
-        } loading={tableLoading} onSearch={this.handleSearch} />
-        <div style={{ height: '1rem' }} />
-        <Table loading={tableLoading} size="small" bordered columns={this.columns} dataSource={this.state.tableData} pagination={false} />
+          ]}
+          columns={this.columns}
+          bindTable={table => this.table = table}
+        />
       </div>
     )
   }

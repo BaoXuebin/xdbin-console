@@ -1,6 +1,6 @@
-import { Table } from 'antd'
-import React, { Component, Fragment } from 'react'
-import SearchForm from './SearchForm'
+import { Table } from 'antd';
+import React, { Component, Fragment } from 'react';
+import SearchForm from './SearchForm';
 
 class FetchTable extends Component {
 
@@ -10,7 +10,7 @@ class FetchTable extends Component {
     pageSize: 20,
     total: 0,
     tableData: [],
-    condition: {}
+    condition: this.props.initSearchCondition || {}
   }
 
   componentDidMount() {
@@ -25,9 +25,10 @@ class FetchTable extends Component {
   }
 
   reqTableData = () => {
+    console.log(this.state.condition)
     this.setState({ tableLoading: true })
     this.props.req({
-      ...this.props.condition, pageNum: this.state.pageNum, pageSize: this.state.pageSize
+      ...this.state.condition, pageNum: this.state.pageNum, pageSize: this.state.pageSize
     })
       .then(res => {
         this.setState({ tableData: res.records, pageNum: res.current, pageSize: res.size, total: res.total })
@@ -43,6 +44,7 @@ class FetchTable extends Component {
   }
 
   handleSearch = (condition) => {
+    console.log(condition)
     this.setState({ condition }, () => {
       this.reqTableData()
     })
