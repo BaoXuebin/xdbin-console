@@ -39,7 +39,7 @@ export const fetch = (url, { method, headers, body, type, errMap } = {}) => {
   // 默认 header
   let _defaultHeaders = null;
   _defaultHeaders = {
-    Authorization: `Bearer ${get(LocalStorageKey.TOKEN)}`,
+    Authorization: `Bearer ${get(LocalStorageKey.TOKEN) || ''}`,
   };
 
   if (type !== 'file') {

@@ -205,8 +205,7 @@ class RssSitePage extends Component {
   }
 
   handleSearch = (condition) => {
-    console.log(condition)
-    this.setState({ condition: {} }, () => {
+    this.setState({ condition }, () => {
       this.fetchRssSites()
     })
   }
@@ -231,7 +230,8 @@ class RssSitePage extends Component {
         <SearchForm fields={
           [
             { name: 'title', label: '标题' },
-            { name: 'pullOn', label: '是否订阅', type: 'select', defaultValue: 1, dataSet: [{ value: 1, label: '是' }, { value: 0, label: '否' }] }]
+            { name: 'pullOn', label: '是否订阅', type: 'select', defaultValue: 1, dataSet: [{ value: 1, label: '是' }, { value: 0, label: '否' }] }
+          ]
         } loading={tableLoading} onSearch={this.handleSearch} />
         <div style={{ height: '1rem' }} />
         <Table loading={tableLoading} size="small" bordered columns={this.columns} dataSource={this.state.tableData} pagination={false} />

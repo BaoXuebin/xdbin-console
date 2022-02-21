@@ -71,8 +71,8 @@ class RssBlogPage extends Component {
     this.fetchRssBlogs()
   }
 
-  handleSearch = () => {
-    this.setState({ condition: {} }, () => {
+  handleSearch = (condition) => {
+    this.setState({ condition }, () => {
       this.fetchRssBlogs()
     })
   }
