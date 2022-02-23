@@ -1,8 +1,8 @@
 import { DeleteOutlined, DisconnectOutlined, GlobalOutlined, HomeOutlined, LoadingOutlined, UserOutlined, WifiOutlined } from '@ant-design/icons';
-import { Button, Image, Modal, Space, Tooltip } from 'antd';
+import { Button, Descriptions, Image, Modal, Popover, Space, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import React, { Component } from 'react';
-import { deleteSiteReq, fetchRssSitesReq, subScribeSiteReq, unSubScribeSiteReq } from '../../../api/Rss';
+import { deleteSiteReq, fetchRssSiteJobReq, fetchRssSitesReq, subScribeSiteReq, unSubScribeSiteReq } from '../../../api/Rss';
 import DefaultFavicon from '../../../assets/favicon.ico';
 import FetchTable from '../../../components/FetchTable';
 import Page from '../../base/Page';
@@ -82,7 +82,30 @@ class RssSitePage extends Component {
       render: (latestPullSiteJobId, site) =>
         <div>
           <PullStatusTag status={site.latestPullStatus} />
-          {latestPullSiteJobId && <a target="_blank" href="#"> <Tooltip title={dayjs(site.latestPullTime).fromNow()}>#{latestPullSiteJobId}</Tooltip></a>}
+          {latestPullSiteJobId &&
+            <Popover title={`#${latestPullSiteJobId}`} content={
+              () => {
+                if (this.state.siteJobInfoLoading) {
+                  return '加载中...'
+                }
+                const job = this.state.siteJobsMap[latestPullSiteJobId] || {}
+                return (
+                  <div style={{ width: '450px' }}>
+                    <Descriptions column={2}>
+                      <Descriptions.Item label="订阅源">{job.rssSiteTitle}</Descriptions.Item>
+                      <Descriptions.Item label="抓取批次">{job.pullJobBatchCode}</Descriptions.Item>
+                      <Descriptions.Item label="时长">{job.duration || '-'} ms</Descriptions.Item>
+                      <Descriptions.Item label="状态">{job.pullStatus || '-'}</Descriptions.Item>
+                      <Descriptions.Item label="抓取数量">{job.pullBlogCount}</Descriptions.Item>
+                      <Descriptions.Item label="新增数量">{job.newPullBlogCount}</Descriptions.Item>
+                      <Descriptions.Item label="开始时间">{job.startTime}</Descriptions.Item>
+                      <Descriptions.Item label="结束时间">{job.endTime}</Descriptions.Item>
+                    </Descriptions>
+                  </div>
+                )
+              }
+            } trigger="click"><a target="_blank" onClick={() => { this.handleQuerySiteJob(latestPullSiteJobId); }}>#{latestPullSiteJobId}</a></Popover>
+          }
           &nbsp;&nbsp;
           <a onClick={this.pullSite}>
             <Tooltip title="重新拉取">
@@ -127,7 +150,28 @@ class RssSitePage extends Component {
     subscribeSiteId: null,
     subscribeBtnLoading: false,
     deleteSiteId: null,
-    deleteBtnLoading: false
+    deleteBtnLoading: false,
+    siteJobInfoLoading: false,
+    siteJobsMap: {}
+  }
+
+  handleQuerySiteJob = (siteJobId) => {
+    const siteJobsMap = this.state.siteJobsMap
+    console.log(Object.keys(siteJobsMap))
+    if (Object.keys(siteJobsMap).includes(String(siteJobId))) {
+      return;
+    }
+    this.setState({ siteJobInfoLoading: true })
+    fetchRssSiteJobReq(siteJobId)
+      .then(res => {
+        if (res) {
+          siteJobsMap[res.id] = res
+          this.setState({ siteJobsMap })
+        }
+      })
+      .finally(() => {
+        this.setState({ siteJobInfoLoading: false })
+      })
   }
 
   pullSite = () => { }

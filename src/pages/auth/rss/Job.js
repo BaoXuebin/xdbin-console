@@ -1,9 +1,11 @@
-import dayjs from 'dayjs'
-import { Typography } from 'antd';
-import React, { Component, Fragment } from 'react'
-import { fetchRssBlogsReq } from '../../../api/Rss'
-import FetchTable from '../../../components/FetchTable'
-import Page from '../../base/Page'
+import {
+  CheckCircleOutlined, CloseCircleOutlined
+} from '@ant-design/icons';
+import { Tag, Typography } from 'antd';
+import React, { Component, Fragment } from 'react';
+import { fetchRssPullJobsReq } from '../../../api/Rss';
+import FetchTable from '../../../components/FetchTable';
+import Page from '../../base/Page';
 
 const breadcrumb = [
   {
@@ -24,36 +26,43 @@ class RssJobPage extends Component {
       width: 60,
     },
     {
-      title: 'rss来源',
-      dataIndex: 'rssSiteTitle',
-      key: 'rssSiteTitle',
+      title: '任务批次号',
+      dataIndex: 'batchCode',
+      key: 'batchCode',
       width: 200,
-      render: (rssSiteTitle, blog) => <a href={blog.rssSiteAboutUrl} target="_blank">@{rssSiteTitle}</a>
     },
     {
-      title: '文章标题',
-      dataIndex: 'title',
-      key: 'title',
-      render: (title, blog) =>
-        <Fragment>
-          {
-            blog.clickNum > 0 && <span style={{ fontSize: 12, color: 'gray' }}>[{blog.clickNum}次点击]&nbsp;</span>
-          }
-          <a href={blog.blogUrl} target="_blank">{title}</a>
-        </Fragment>
-    },
-    {
-      title: '作者',
-      dataIndex: 'author',
-      key: 'author',
-      width: 120
-    },
-    {
-      title: '发布时间',
-      dataIndex: 'publishTime',
-      key: 'publishTime',
+      title: '任务执行状态',
+      dataIndex: 'pullStatus',
+      key: 'pullStatus',
       width: 120,
-      render: (publishTime) => <span>{publishTime ? dayjs(publishTime).fromNow() : ''}</span>
+    },
+    {
+      title: '任务执行结果',
+      dataIndex: 'okCount',
+      key: 'okCount',
+      width: 200,
+      render: (okCount, record) => {
+        return (
+          <div>
+            <Tag icon={<CheckCircleOutlined />} color="success">{okCount}成功</Tag>
+            <Tag icon={<CloseCircleOutlined />} color="error">{record.failCount}失败</Tag>
+          </div>
+        )
+      }
+    },
+    {
+      title: '任务执行时间',
+      dataIndex: 'duration',
+      key: 'duration',
+      width: 120,
+      render: (duration) => `${duration} ms`
+    },
+    {
+      title: '开始时间/结束时间',
+      dataIndex: 'startTime',
+      key: 'startTime',
+      render: (startTime, record) => `${startTime} ~ ${record.endTime}`
     },
     {
       title: '操作',
@@ -66,12 +75,9 @@ class RssJobPage extends Component {
   render() {
     return (
       <Fragment>
-        <div className="top" style={{ marginBottom: '1rem' }}>
-          <Title>h1. Ant Design</Title>
-        </div>
         <div className="rss-rss-page page">
           <FetchTable
-            req={fetchRssBlogsReq}
+            req={fetchRssPullJobsReq}
             form={[
               { name: 'title', label: '标题' }
             ]}
